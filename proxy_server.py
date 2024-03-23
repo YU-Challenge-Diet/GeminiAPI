@@ -48,7 +48,7 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    image = request.files.get('name')
+    image = request.files.get('image')
     image.name = image.filename
     image = BufferedReader(image)
 
