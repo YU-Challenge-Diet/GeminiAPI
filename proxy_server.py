@@ -50,7 +50,6 @@ def upload_file():
     content = bytes(imgCont)
     url = upload_picture_to_gcs(content, image.filename)
     print(f"The url is {url}")
-    image_data = Image.from_bytes(image_data)
 
     # Forward the request to the second server
     try:
