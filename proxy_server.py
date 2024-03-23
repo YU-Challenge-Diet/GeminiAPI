@@ -27,7 +27,7 @@ def upload_picture_to_gcs(picture_data, filename):
     blob.upload_from_string(picture_data)
 
     # Get the public URL of the uploaded file
-    url = blob.public_url
+    url = 'gs://gemini_bucket_1'+file_name
 
     return url
 
