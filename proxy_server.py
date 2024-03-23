@@ -49,10 +49,11 @@ def upload_file():
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
     image = request.files.get('image')
+    image.name = image.filename
     image = BufferedReader(image)
 
     print(f"image: {image}")
-    url = upload_picture_to_gcs(image, image.filename)
+    url = upload_picture_to_gcs(image, image.name)
     print(f"The url is {url}")
 
     # Forward the request to the second server
