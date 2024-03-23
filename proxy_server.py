@@ -57,6 +57,7 @@ def upload_file():
     try:
         response = generate_text(
             'yuc-abhinav', 'asia-southeast1', url, text)
+        print(f"type: {type(response)}")
         print(f"got response: {response}")
         # Forward the second server's response back to the initial client
         return response.candidates.content.parts.text
