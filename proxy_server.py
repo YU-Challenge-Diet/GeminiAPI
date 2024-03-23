@@ -43,7 +43,7 @@ def upload_picture_to_gcs(picture_data, filename):
     return url
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload/', methods=['POST'])
 def upload_file():
     # Ensure both image and text are present in the request
     if 'image' not in request.files or 'text' not in request.form:
