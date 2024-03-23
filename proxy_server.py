@@ -56,7 +56,7 @@ def upload_file():
     # Forward the request to the second server
     try:
         response = generate_text(
-            'yuc-abhinav', 'asia-southeast1', image, data.read())
+            'yuc-abhinav', 'asia-southeast1', image.read(), text)
         response.raise_for_status()
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
