@@ -48,19 +48,16 @@ def upload_file():
     # Prepare the files and data to be forwarded
 
     content = request.files.get('image').read()
-    print(f"content: {content}")
+
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
 
-    print(f"image: {image}")
     url = upload_picture_to_gcs(content, image.filename)
-    print(f"The url is {url}")
-
     # Forward the request to the second server
     try:
         response = generate_text(
             'yuc-abhinav', 'asia-southeast1', url, text)
-        response.raise_for_status()
+        print(f"got response: {response}")
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
     except requests.exceptions.RequestException as e:
