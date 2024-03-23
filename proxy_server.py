@@ -49,7 +49,8 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    url = upload_picture_to_gcs(image)
+    image_data = image.read()
+    url = upload_picture_to_gcs(image_data)
     # Forward the request to the second server
     try:
         response = generate_text(
