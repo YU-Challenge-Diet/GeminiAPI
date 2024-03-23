@@ -39,7 +39,7 @@ def upload_file():
         return jsonify({"error": "Missing image or text"}), 400
     image = request.files['image']
     text = request.form['text']
-    print
+    print(f"image: {image}")
     # Validate the file extension
     if image.filename.split('.')[-1].lower() not in ['jpeg', 'jpg', 'png', 'heic']:
         return jsonify({"error": "Invalid image format"}), 400
