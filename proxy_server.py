@@ -57,10 +57,10 @@ def upload_file():
     try:
         response = generate_text(
             'yuc-abhinav', 'asia-southeast1', url, text)
-        print(f"type: {type(response)}")
-        print(f"got response: {response}")
+        print(f"type: {type(response.text)}")
+        print(f"got response: {response.text}")
         # Forward the second server's response back to the initial client
-        return response.candidates.content.parts.text
+        return response.candidates[0].content.parts[0].text
     except requests.exceptions.RequestException as e:
         # Handle any errors that occur during the forwarding process
         return jsonify({"error": str(e)}), 500
