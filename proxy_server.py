@@ -68,6 +68,7 @@ def upload_file():
         print(f"type: {type(response.text)}")
         print(f"got response: {response.text}")
         # Forward the second server's response back to the initial client
+        response.headers.add("Access-Control-Allow-Origin", "*")
         return response.candidates[0].content.parts[0].text
     except requests.exceptions.RequestException as e:
         # Handle any errors that occur during the forwarding process
