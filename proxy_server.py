@@ -47,6 +47,7 @@ def upload_file():
     data = {'text': text}
     image_data = image.read()
     url = upload_picture_to_gcs(image_data)
+    print(f"The url is {url}")
     image_data = Image.from_bytes(image_data)
 
     # Forward the request to the second server
