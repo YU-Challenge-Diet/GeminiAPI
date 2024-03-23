@@ -38,20 +38,19 @@ def upload_file():
     # Ensure both image and text are present in the request
     if 'image' not in request.files or 'text' not in request.form:
         return jsonify({"error": "Missing image or text"}), 400
-    print(f"New request {request}")
+
     image = request.files['image']
     text = request.form['text']
-    print(f"image: {image}")
-    print(f"text: {text}")
+
     # Validate the file extension
     if image.filename.split('.')[-1].lower() not in ['jpeg', 'jpg', 'png', 'heic']:
         return jsonify({"error": "Invalid image format"}), 400
     # Prepare the files and data to be forwarded
+
+    content = request.files.get('image').read()
+    print(f"content: {content}")
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    image = request.files.get('image')
-    image.name = image.filename
-    image = BufferedReader(image)
 
     print(f"image: {image}")
     url = upload_picture_to_gcs(image, image.name)
