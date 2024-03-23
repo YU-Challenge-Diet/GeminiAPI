@@ -2,7 +2,6 @@ import os
 from google.cloud import storage
 from flask import Flask, request, jsonify, Response
 import requests
-
 import http.client
 import typing
 import urllib.request
@@ -12,30 +11,48 @@ from io import BytesIO
 app = Flask(__name__)
 
 
+def upload_picture_to_gcs(picture_data):
+    # Set up the Google Cloud Storage client
+    client = storage.Client()
+
+    # Specify the bucket name and file name
+    bucket_name = "gemini_bucket_1"
+    file_name = "picture.jpg"  # Specify the desired file name
+
+    # Get the bucket and create a new blob
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(file_name)
+
+    # Upload the picture data to Google Cloud Storage
+    blob.upload_from_string(picture_data)
+
+    # Get the public URL of the uploaded file
+    url = blob.public_url
+
+    return url
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     # Ensure both image and text are present in the request
     if 'image' not in request.files or 'text' not in request.form:
         return jsonify({"error": "Missing image or text"}), 400
-
     image = request.files['image']
     text = request.form['text']
-
     # Validate the file extension
     if image.filename.split('.')[-1].lower() not in ['jpeg', 'jpg', 'png', 'heic']:
         return jsonify({"error": "Invalid image format"}), 400
-
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-
-    # Convert the image to bytes
-    image_bytes = image.read()
+    image_data = image.read()
+    url = upload_picture_to_gcs(image_data)
+    image_data = Image.from_bytes(image_data)
 
     # Forward the request to the second server
     try:
         response = generate_text(
-            'yuc-abhinav', 'asia-southeast1', image_bytes, text)
+            'yuc-abhinav', 'asia-southeast1', url, text)
         response.raise_for_status()
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
@@ -44,21 +61,26 @@ def upload_file():
         return jsonify({"error": str(e)}), 500
 
 
-def generate_text(project_id: str, location: str, img, text) -> str:
+def generate_text(project_id: str, location: str, url, text) -> str:
+
     # Initialize Vertex AI
     vertexai.init(project=project_id, location=location)
     # Load the model
     vision_model = GenerativeModel("gemini-1.0-pro-vision")
     # Generate text
-    # Corrected Part creation
-    cookie_picture = Part(file_uri=img, mime_type='image/png')
-    response = vision_model.generate_content([
-        text,
-        cookie_picture  # Correctly pass the Part instance
-    ])
+    response = vision_model.generate_content(
+        [
+            Part.from_uri(
+                url, mime_type="image/png"
+
+            ),
+            text,
+        ]
+    )
     print(response)
     return response.text
 
 
+# Load images from Cloud Storage URI
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
