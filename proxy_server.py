@@ -24,11 +24,8 @@ def upload_picture_to_gcs(picture_data):
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
 
-    # Create a BytesIO object from the picture data
-    picture_io = BytesIO(picture_data)
-
     # Upload the picture data to Google Cloud Storage
-    blob.upload_from_file(picture_io)
+    blob.upload_from_string(picture_data)
 
     # Get the public URL of the uploaded file
     url = blob.public_url
