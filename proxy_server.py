@@ -47,7 +47,10 @@ def upload_file():
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
     imgCont = image.read()
+    print(f"image: {imgCont}")
     content = bytes(imgCont)
+
+    print(f"image: {content}")
     url = upload_picture_to_gcs(content, image.filename)
     print(f"The url is {url}")
 
