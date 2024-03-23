@@ -28,7 +28,7 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    image_data = image.read()
+    image_data = image
     image_data = Image.from_bytes(image_data)
 
     # Forward the request to the second server
