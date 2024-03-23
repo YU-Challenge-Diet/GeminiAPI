@@ -50,7 +50,7 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     # Load the model
     vision_model = GenerativeModel("gemini-1.0-pro-vision")
     # Generate text
-    cookie_picture = [Part(mime_type='image/png', data=img)]
+    cookie_picture = [Part(content_type='image/png', data=img)]
     response = vision_model.generate_content([
 
         text,        cookie_picture]
