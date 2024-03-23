@@ -12,27 +12,6 @@ from io import BytesIO
 app = Flask(__name__)
 
 
-def upload_picture_to_gcs(picture_data):
-    # Set up the Google Cloud Storage client
-    client = storage.Client()
-
-    # Specify the bucket name and file name
-    bucket_name = "gemini_bucket_1"
-    file_name = "picture.jpg"  # Specify the desired file name
-
-    # Get the bucket and create a new blob
-    bucket = client.get_bucket(bucket_name)
-    blob = bucket.blob(file_name)
-
-    # Upload the picture data to Google Cloud Storage
-    blob.upload_from_string(picture_data)
-
-    # Get the public URL of the uploaded file
-    url = blob.public_url
-
-    return url
-
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
     # Ensure both image and text are present in the request
@@ -50,11 +29,12 @@ def upload_file():
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
     image_data = image.read()
-    url = upload_picture_to_gcs(image_data)
+    image_data = Image.from_bytes(image_data)
+
     # Forward the request to the second server
     try:
         response = generate_text(
-            'yuc-abhinav', 'asia-southeast1', url, text)
+            'yuc-abhinav', 'asia-southeast1', image_data, text)
         response.raise_for_status()
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
@@ -63,7 +43,7 @@ def upload_file():
         return jsonify({"error": str(e)}), 500
 
 
-def generate_text(project_id: str, location: str, url, text) -> str:
+def generate_text(project_id: str, location: str, img, text) -> str:
     # Initialize Vertex AI
     vertexai.init(project=project_id, location=location)
     # Load the model
@@ -73,7 +53,7 @@ def generate_text(project_id: str, location: str, url, text) -> str:
     response = vision_model.generate_content(
         [
             Part.from_uri(
-                url, mime_type="image/png"
+                img, mime_type="image/png"
 
             ),
             text,
