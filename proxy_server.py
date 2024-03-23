@@ -43,7 +43,7 @@ def upload_file():
     text = request.form['text']
 
     # Validate the file extension
-    if image.filename.split('.')[-1].lower() not in ['jpg', 'png', 'heic']:
+    if image.filename.split('.')[-1].lower() not in ['jpeg', 'jpg', 'png', 'heic']:
         return jsonify({"error": "Invalid image format"}), 400
 
     # Prepare the files and data to be forwarded
