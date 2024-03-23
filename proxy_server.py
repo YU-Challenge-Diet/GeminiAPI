@@ -24,7 +24,7 @@ def upload_picture_to_gcs(picture_data, filename):
     blob = bucket.blob(file_name)
 
     # Upload the picture data to Google Cloud Storage
-    blob.upload_from_bytes(picture_data)
+    blob.upload_from_string(picture_data)
 
     # Get the public URL of the uploaded file
     url = 'gs://gemini_bucket_1/'+file_name
@@ -45,8 +45,7 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    image_data = image.read()
-    url = upload_picture_to_gcs(image_data, image.filename)
+    url = upload_picture_to_gcs(image, image.filename)
     print(f"The url is {url}")
     image_data = Image.from_bytes(image_data)
 
