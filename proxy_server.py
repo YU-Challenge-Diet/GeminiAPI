@@ -62,7 +62,6 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     )
     print(response)
     return response.text
-# Load images from Cloud Storage URI
 
 
 if __name__ == '__main__':
