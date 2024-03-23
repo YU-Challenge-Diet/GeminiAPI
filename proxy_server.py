@@ -42,6 +42,7 @@ def upload_picture_to_gcs(picture_data, filename):
 
 
 @app.route('/upload', methods=['POST'])
+@cross_origin()
 def upload_file():
     # Ensure both image and text are present in the request
     if 'image' not in request.files or 'text' not in request.form:
@@ -63,13 +64,14 @@ def upload_file():
     url = upload_picture_to_gcs(content, image.filename)
     # Forward the request to the second server
     try:
-        response = generate_text(
+        txt = generate_text(
             'yuc-abhinav', 'asia-southeast1', url, text)
         print(f"type: {type(response.text)}")
         print(f"got response: {response.text}")
+        response = jsonify(message=txt)
         # Forward the second server's response back to the initial client
         response.headers.add("Access-Control-Allow-Origin", "*")
-        return response.candidates[0].content.parts[0].text
+        return response
     except requests.exceptions.RequestException as e:
         # Handle any errors that occur during the forwarding process
         return jsonify({"error": str(e)}), 500
