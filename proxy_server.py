@@ -51,13 +51,8 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     # Generate text
 
     response = vision_model.generate_content(
-        [
-            Part.from_uri(
-                img, mime_type="image/png"
-
-            ),
-            text,
-        ]
+        img,
+        text
     )
     print(response)
     return response.text
