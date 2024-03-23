@@ -80,8 +80,8 @@ def generate_text(project_id: str, location: str, url, text) -> str:
             text,
         ]
     )
-    print(response)
-    return response.text
+
+    return response
 
 
 # Load images from Cloud Storage URI
