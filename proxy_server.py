@@ -69,9 +69,9 @@ def upload_file():
     try:
         txt = generate_text(
             'yuc-abhinav', 'asia-southeast1', url, text)
-        print(f"type: {type(response.text)}")
-        print(f"got response: {response.text}")
+
         response = jsonify(message=txt)
+        print(f"got response: {response}")
         # Forward the second server's response back to the initial client
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
