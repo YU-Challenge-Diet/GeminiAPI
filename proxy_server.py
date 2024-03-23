@@ -38,7 +38,7 @@ def upload_file():
     # Ensure both image and text are present in the request
     if 'image' not in request.files or 'text' not in request.form:
         return jsonify({"error": "Missing image or text"}), 400
-
+    print(f"request noted: {request}")
     image = request.files['image']
     text = request.form['text']
 
