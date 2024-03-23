@@ -7,7 +7,7 @@ import http.client
 import typing
 import urllib.request
 import vertexai
-from vertexai.generative_models import GenerativeModel, Image
+from vertexai.generative_models import GenerativeModel, Image, Part
 from io import BytesIO
 app = Flask(__name__)
 
@@ -73,7 +73,8 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     response = vision_model.generate_content(
         [
             Part.from_uri(
-                img, mime_type="image/png"
+                upload_picture_to_gcs(img), mime_type="image/png"
+
             ),
             text,
         ]
