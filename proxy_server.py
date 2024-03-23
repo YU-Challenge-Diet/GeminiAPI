@@ -20,7 +20,7 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    print(f"got REQ, file:{files} and data:{data}")
+    print(f"got REQ, file: and data:{data}")
     # Forward the request to the second server
     try:
         # Assuming the second server is expecting the image as a multipart/form-data
