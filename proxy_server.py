@@ -30,7 +30,7 @@ def upload_file():
     data = {'text': text}
 
     # Convert the image to bytes
-    image_bytes = image.read_bytes()
+    image_bytes = image.read()
 
     # Forward the request to the second server
     try:
