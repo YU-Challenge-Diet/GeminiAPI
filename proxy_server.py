@@ -50,9 +50,9 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     vision_model = GenerativeModel("gemini-1.0-pro-vision")
     # Generate text
 
-    response = vision_model.generate_content(
-        img,
-        text
+    response = vision_model.generate_content([
+
+        text,        img]
     )
     print(response)
     return response.text
