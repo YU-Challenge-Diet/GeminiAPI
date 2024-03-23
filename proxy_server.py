@@ -49,11 +49,11 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-
+    url = upload_picture_to_gcs(image)
     # Forward the request to the second server
     try:
         response = generate_text(
-            'yuc-abhinav', 'asia-southeast1', image.read(), text)
+            'yuc-abhinav', 'asia-southeast1', url, text)
         response.raise_for_status()
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
@@ -62,16 +62,17 @@ def upload_file():
         return jsonify({"error": str(e)}), 500
 
 
-def generate_text(project_id: str, location: str, img, text) -> str:
+def generate_text(project_id: str, location: str, url, text) -> str:
     # Initialize Vertex AI
     vertexai.init(project=project_id, location=location)
     # Load the model
     vision_model = GenerativeModel("gemini-1.0-pro-vision")
     # Generate text
+
     response = vision_model.generate_content(
         [
             Part.from_uri(
-                upload_picture_to_gcs(img), mime_type="image/png"
+                url, mime_type="image/png"
 
             ),
             text,
