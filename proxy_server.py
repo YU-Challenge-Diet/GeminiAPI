@@ -17,7 +17,7 @@ def upload_picture_to_gcs(picture_data):
 
     # Specify the bucket name and file name
     bucket_name = "gemini_bucket_1"
-    file_name = "picture.jpg"  # Specify the desired file name
+    file_name = "picture.png"  # Specify the desired file name
 
     # Get the bucket and create a new blob
     bucket = client.get_bucket(bucket_name)
