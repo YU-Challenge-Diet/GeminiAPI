@@ -14,10 +14,12 @@ import http.client
 import typing
 import urllib.request
 import vertexai
+from flask_cors import CORS
 from io import BufferedReader
 from vertexai.generative_models import GenerativeModel, Image, Part
 from io import BytesIO
 app = Flask(__name__)
+CORS(app)
 
 
 def upload_picture_to_gcs(picture_data, filename):
@@ -42,7 +44,6 @@ def upload_picture_to_gcs(picture_data, filename):
 
 
 @app.route('/upload', methods=['POST'])
-@cross_origin()
 def upload_file():
     # Ensure both image and text are present in the request
     if 'image' not in request.files or 'text' not in request.form:
