@@ -24,7 +24,7 @@ def upload_picture_to_gcs(picture_data, filename):
     blob = bucket.blob(file_name)
 
     # Upload the picture data to Google Cloud Storage
-    blob.upload_from_string(picture_data)
+    blob.upload_from_bytes(picture_data)
 
     # Get the public URL of the uploaded file
     url = 'gs://gemini_bucket_1/'+file_name
@@ -73,7 +73,6 @@ def generate_text(project_id: str, location: str, url, text) -> str:
         [
             Part.from_uri(
                 url, mime_type="image/png"
-
             ),
             text,
         ]
