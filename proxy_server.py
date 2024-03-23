@@ -28,8 +28,14 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    image_data = image
-    image_data = Image.from_bytes(image_data)
+
+    # Convert the image to bytes
+    image_bytes = BytesIO()
+    image.save(image_bytes)
+    image_bytes.seek(0)
+
+    # Prepare the image data to be forwarded
+    image_data = Image.from_bytes(image_bytes.getvalue())
 
     # Forward the request to the second server
     try:
