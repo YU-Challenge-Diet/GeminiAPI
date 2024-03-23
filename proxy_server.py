@@ -49,7 +49,6 @@ def upload_file():
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
     image = request.files.get('image')
-    image.name = image.filename
     image = BufferedReader(image)
 
     print(f"image: {image}")
