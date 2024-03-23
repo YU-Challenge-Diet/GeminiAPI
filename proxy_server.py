@@ -30,17 +30,12 @@ def upload_file():
     data = {'text': text}
 
     # Convert the image to bytes
-    image_bytes = BytesIO()
-    image.save(image_bytes)
-    image_bytes.seek(0)
-
-    # Prepare the image data to be forwarded
-    image_data = Image.from_bytes(image_bytes.getvalue())
+    image_bytes = image.read_bytes()
 
     # Forward the request to the second server
     try:
         response = generate_text(
-            'yuc-abhinav', 'asia-southeast1', image_data, text)
+            'yuc-abhinav', 'asia-southeast1', image_bytes, text)
         response.raise_for_status()
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
@@ -55,10 +50,13 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     # Load the model
     vision_model = GenerativeModel("gemini-1.0-pro-vision")
     # Generate text
-
+    cookie_picture = [{
+        'mime_type': 'image/png',
+        'data': img
+    }]
     response = vision_model.generate_content([
 
-        text,        img]
+        text,        cookie_picture]
     )
     print(response)
     return response.text
