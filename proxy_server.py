@@ -1,12 +1,39 @@
+import os
+from google.cloud import storage
 from flask import Flask, request, jsonify, Response
 import requests
 
 import http.client
 import typing
 import urllib.request
-
+import vertexai
 from vertexai.generative_models import GenerativeModel, Image
+from io import BytesIO
 app = Flask(__name__)
+
+
+def upload_picture_to_gcs(picture_data):
+    # Set up the Google Cloud Storage client
+    client = storage.Client()
+
+    # Specify the bucket name and file name
+    bucket_name = "gemini_bucket_1"
+    file_name = "picture.jpg"  # Specify the desired file name
+
+    # Get the bucket and create a new blob
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(file_name)
+
+    # Create a BytesIO object from the picture data
+    picture_io = BytesIO(picture_data)
+
+    # Upload the picture data to Google Cloud Storage
+    blob.upload_from_file(picture_io)
+
+    # Get the public URL of the uploaded file
+    url = blob.public_url
+
+    return url
 
 
 @app.route('/upload', methods=['POST'])
@@ -28,18 +55,7 @@ def upload_file():
 
     # Forward the request to the second server
     try:
-        # Assuming the second server is expecting the image as a multipart/form-data
-        # and the text as form data
-        # Pass multimodal prompt
-        model = GenerativeModel("gemini-1.0-pro-vision")
-        response = model.generate_content(
-            [
-                image.read(),
-                text
-
-            ]
-        )
-        print(response)
+        response = generate_text('yuc-abhinav', 'asia-southeast1', files, data)
         response.raise_for_status()
         # Forward the second server's response back to the initial client
         return Response(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
@@ -48,6 +64,22 @@ def upload_file():
         return jsonify({"error": str(e)}), 500
 
 
+def generate_text(project_id: str, location: str, img, text) -> str:
+    # Initialize Vertex AI
+    vertexai.init(project=project_id, location=location)
+    # Load the model
+    vision_model = GenerativeModel("gemini-1.0-pro-vision")
+    # Generate text
+    response = vision_model.generate_content(
+        [
+            Part.from_uri(
+                img, mime_type="image/png"
+            ),
+            text,
+        ]
+    )
+    print(response)
+    return response.text
 # Load images from Cloud Storage URI
 
 
