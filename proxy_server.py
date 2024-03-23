@@ -51,7 +51,7 @@ def generate_text(project_id: str, location: str, img, text) -> str:
     vision_model = GenerativeModel("gemini-1.0-pro-vision")
     # Generate text
     # Corrected Part creation
-    cookie_picture = Part(data=img, mime_type='image/png')
+    cookie_picture = Part(file_uri=img, mime_type='image/png')
     response = vision_model.generate_content([
         text,
         cookie_picture  # Correctly pass the Part instance
