@@ -1,3 +1,11 @@
+'''
+This is the main server file
+
+It allows a client to connect to google's GEMINI VISION PRO and send image data and get information from said image
+
+
+developed by albertjacobsz
+'''
 import os
 from google.cloud import storage
 from flask import Flask, request, jsonify, Response
