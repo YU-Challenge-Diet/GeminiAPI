@@ -6,6 +6,7 @@ import http.client
 import typing
 import urllib.request
 import vertexai
+from io import BufferedReader
 from vertexai.generative_models import GenerativeModel, Image, Part
 from io import BytesIO
 app = Flask(__name__)
@@ -47,12 +48,12 @@ def upload_file():
     # Prepare the files and data to be forwarded
     files = {'image': (image.filename, image.read())}
     data = {'text': text}
-    imgCont = image.read()
-    print(f"image: {imgCont}")
-    content = bytes(imgCont)
+    image = request.files.get('name')
+    image.name = image.filename
+    image = BufferedReader(image)
 
-    print(f"image: {content}")
-    url = upload_picture_to_gcs(content, image.filename)
+    print(f"image: {image}")
+    url = upload_picture_to_gcs(image, image.filename)
     print(f"The url is {url}")
 
     # Forward the request to the second server
