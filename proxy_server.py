@@ -55,8 +55,8 @@ def upload_file():
     print(image)
     print(text)
     # Validate the file extension
-    if image.filename.split('.')[-1].lower() not in ['jpeg', 'jpg', 'png', 'heic']:
-        return jsonify({"error": "Invalid image format"}), 400
+    # if image.filename.split('.')[-1].lower() not in ['jpeg', 'jpg', 'png', 'heic']:
+    #    return jsonify({"error": "Invalid image format"}), 400
     # Prepare the files and data to be forwarded
 
     content = request.files.get('image').read()
